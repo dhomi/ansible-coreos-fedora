@@ -1,0 +1,3 @@
+[all]
+192.168.178.160 ansible_user=dhomi ansible_password=Ipnpdp27
+192.168.178.131 ansible_user=techlab ansible_password=TechLab01
