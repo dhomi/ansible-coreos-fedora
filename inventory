@@ -5,8 +5,4 @@
 ansible_user = techlab
 ansible_port = 22
 ansible_ssh_private_key_file=~/.ssh/id_rsa
-
-qa_host='https://dhomi.ipv64.net'
-qa_bucket='qa_bucket'
-qa_object='/srv/qa_folder/test_file.zip'
-qa_dest='/home/techlab/test_file.zip'
+ansible_python_interpreter=/usr/bin/python3.9

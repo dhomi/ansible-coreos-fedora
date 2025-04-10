@@ -1,10 +1,11 @@
-# Installeer services op techlab servers
+# Installeer services op techlab servers via ansible
 
-## via ansible
-
+## Install
 installeer eerst voor jezelf de ansible-playbook in je machine.
-De wachtwoorden zijn vergrendeld
+- De wachtwoorden zijn vergrendeld
 
-creeer een '.vault_password' file met daarin onze vault wachtoord
-
-ansible-playbook -i inventory ngnix.yml --vault-password-file ./vault_file --ask-vault-pass
+## Stel de secret voor de vault in
+Bewerk het ```.vault_password``` met het wachtoord
+ 
+## RUN it
+```ansible-playbook -i inventory info.yaml```

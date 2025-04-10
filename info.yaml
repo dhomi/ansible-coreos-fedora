@@ -1,0 +1,10 @@
+---
+- name: Ansible smoke test
+  hosts: all
+  vars_files:
+    - vault.yaml
+
+  tasks:
+    - name: Toon hostnaam
+      debug:
+        msg: "Hostnaam is: {{ ansible_hostname }} FQDN: {{ ansible_fqdn }}"
