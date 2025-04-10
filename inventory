@@ -1,3 +1,12 @@
 [all]
-192.168.178.160 ansible_user=dhomi ansible_password=Ipnpdp27
-192.168.178.131 ansible_user=techlab ansible_password=TechLab01
+192.168.178.160 qa_user="{{qa_user}}" qa_password="{{qa_password}}" qa_connection=ssh
+
+[all:vars]
+ansible_user = techlab
+ansible_port = 22
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+qa_host='https://dhomi.ipv64.net'
+qa_bucket='qa_bucket'
+qa_object='/srv/qa_folder/test_file.zip'
+qa_dest='/home/techlab/test_file.zip'

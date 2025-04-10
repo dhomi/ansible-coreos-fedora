@@ -1,39 +1,48 @@
 ---
-- name: Installeer Nginx en deploy sample HTML pagina
+- name: Test ssh naar de TechLab server
   hosts: all
-  become: yes
-
+  become: true
+  vars_files: 
+    - vault.yml
+  gather_facts: false
+  
   tasks:
-    - name: Installeer EngineX/Nginx
-      apt:
-        name: nginx
-        state: latest
+    - name: Get server availability by pinging it
+      ping:
 
-    - name: Start Nginx service
-      service:
-        name: nginx
-        state: started
-        enabled: yes
+    - name: Get server hostnaam
+      command: hostname
 
-    - name: Deploy a custom index.html
-      copy:
-          dest: /var/www/html/index.html
-          content: |
-            <html>
-            <head><title>TechLab Quality Accelerators heten u welkom op EngineX/Nginx</title></head>
-            <body>
-            <h1>Nginx is met succes geinstalleerd!</h1>
-            <p>Server: {{ inventory_hostname }}</p>
-            </body>
-            </html>
-
-    - name: Laat HTTP traffic toe door UFW
-      ufw:
-            rule: allow
-            name: 'Nginx HTTP'
-
-  handlers:
-    - name: Herstart nginx
-      service:
-        name: nginx
-        state: restarted
+#    - name: Installeer EngineX/Nginx
+#      apt:
+#        name: nginx
+#        state: latest
+#
+#    - name: Start Nginx service
+#      service:
+#        name: nginx
+#        state: started
+#        enabled: yes
+#
+#    - name: Deploy a custom index.html
+#      copy:
+#          dest: /var/www/html/index.html
+#          content: |
+#            <html>
+#            <head><title>TechLab Quality Accelerators heten u welkom op EngineX/Nginx</title></head>
+#            <body>
+#            <h1>Nginx is met succes geinstalleerd!</h1>
+#            <p>Server: {{ inventory_hostname }}</p>
+#            </body>
+#            </html>
+#
+#    - name: Laat HTTP traffic toe door UFW
+#      ufw:
+#            rule: allow
+#            name: 'Nginx HTTP'
+#
+#  handlers:
+#    - name: Herstart nginx
+#      service:
+#        name: nginx
+#        state: restarted

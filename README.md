@@ -2,6 +2,9 @@
 
 ## via ansible
 
-installeer eerst voor jezelf de ansible-playbook
+installeer eerst voor jezelf de ansible-playbook in je machine.
+De wachtwoorden zijn vergrendeld
 
-ansible-playbook -i inventory ngnix.yml -K
+creeer een '.vault_password' file met daarin onze vault wachtoord
+
+ansible-playbook -i inventory ngnix.yml --vault-password-file ./vault_file --ask-vault-pass
