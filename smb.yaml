@@ -1,0 +1,76 @@
+---
+- name: Install and configure Samba share on AlmaLinux
+  hosts: all
+  become: true
+  vars_files:
+    - vault.yaml
+  vars:
+    samba_share_name: "public"
+    samba_share_path: "/srv/samba/public"
+    samba_user: "username" # set hier je samba login usernaam in
+    samba_password: "ipnpdp"  # wachtwoord, denk aan het encrypten btw.
+
+  tasks:
+    - name: Install Samba packages
+      yum:
+        name:
+          - samba
+          - samba-client
+          - samba-common
+        state: present
+
+    - name: Create Samba share directory
+      file:
+        path: "{{ samba_share_path }}"
+        state: directory
+        mode: '0777'
+        owner: nobody
+        group: nobody
+
+    - name: Ensure SELinux context for Samba
+      command: semanage fcontext -a -t samba_share_t "{{ samba_share_path }}(/.*)?"
+      args:
+        creates: "/etc/selinux/targeted/contexts/files/file_contexts.local"
+      notify: restorecon
+
+    - name: Add Samba user
+      user:
+        name: "{{ samba_user }}"
+        shell: /bin/bash
+
+    - name: Set Samba password
+      ansible.builtin.shell: |
+        (echo '{{ samba_password }}'; echo '{{ samba_password }}') | smbpasswd -a -s {{ samba_user }}
+      no_log: false
+
+    - name: Backup original smb.conf
+      copy:
+        src: /etc/samba/smb.conf
+        dest: /etc/samba/smb.conf.bak
+        remote_src: yes
+        force: no
+
+    - name: Configure Samba share
+      blockinfile:
+        path: /etc/samba/smb.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          [{{ samba_share_name }}]
+          path = {{ samba_share_path }}
+          writable = yes
+          browsable = yes
+          guest ok = no
+          valid users = {{ samba_user }}
+
+    - name: Enable and start Samba services
+      systemd:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - smb
+        - nmb
+
+  handlers:
+    - name: restorecon
+      command: restorecon -Rv "{{ samba_share_path }}"
